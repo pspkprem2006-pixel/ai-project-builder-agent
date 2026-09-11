@@ -63,7 +63,13 @@ def test_provider_bad_shape_is_generic(monkeypatch):
     monkeypatch.setattr("app.services.ai.llm.httpx.Client", lambda *a, **k: _FakeBadShapeClient())
     with pytest.raises(LLMError) as excinfo:
         _client().chat("sys", "user")
-    assert str(excinfo.value) == "Unexpected LLM response"
+    # A malformed provider payload counts as a transient empty response
+    # (retried once) and surfaces as the same generic error as any other
+    # provider failure - provider details and keys are never echoed.
+    message = str(excinfo.value)
+    assert message == "LLM request failed"
+    assert "api.x.ai" not in message
+    assert "sk-not-a-real-key" not in message
 
 
 def test_invalid_json_is_generic(monkeypatch):

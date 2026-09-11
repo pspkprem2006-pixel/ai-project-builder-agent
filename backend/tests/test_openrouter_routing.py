@@ -689,7 +689,6 @@ def test_missing_choices_triggers_fallback(monkeypatch, llm_env):
 
 def test_project_name_aliases_to_name(llm_env):
     llm_env(LLM_PROVIDER="openrouter", OPENROUTER_API_KEY="", OPENAI_API_KEY="")
-    from app.services.ai.reasoning import generate_blueprint
 
     payload = dict(PROJECT_PAYLOAD)
     del payload["name"]
@@ -701,7 +700,6 @@ def test_project_name_aliases_to_name(llm_env):
 
 def test_name_still_works_unchanged(llm_env):
     llm_env(LLM_PROVIDER="openrouter", OPENROUTER_API_KEY="", OPENAI_API_KEY="")
-    from app.services.ai.reasoning import generate_blueprint
 
     blueprint, provider = run_pipeline(dict(PROJECT_PAYLOAD))
     assert provider == "template"

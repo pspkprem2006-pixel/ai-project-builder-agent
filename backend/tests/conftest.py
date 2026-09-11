@@ -2,7 +2,14 @@ import os
 
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 os.environ["SECRET_KEY"] = "test-secret-key-not-for-production"
+# Force the deterministic engine: never let a real provider key from
+# backend/.env leak into the test suite, or pipeline tests would make real
+# network calls to the LLM provider (minutes-long hangs, flaky results).
+os.environ["LLM_PROVIDER"] = "openai"
 os.environ["OPENAI_API_KEY"] = ""
+os.environ["OPENROUTER_API_KEY"] = ""
+os.environ["OPENAI_BASE_URL"] = ""
+os.environ["OPENAI_MODEL"] = ""
 # Pin production-like mode so local backend/.env (DEBUG=true) never bleeds
 # into the test suite; env vars take precedence over the dotenv file.
 os.environ["DEBUG"] = "false"
